@@ -153,22 +153,44 @@ export default class {
       $(`#status-bills-container${this.index}`).html("");
       this.counter++;
     }
-    let testBill;
 
-    window.addEventListener("click", (e) => {
-      testBill = "";
-      console.log(e.currentTarget);
-
-      // console.log(e.target.parentNode);
-      // $(this).parents(".bill-card").fadeOut(100);
-      // bills.forEach((bill) => {
-      //   testBill = bill.id;
-      //   $(`#open-bill${testBill}`).click((e) => {
-      //     this.handleEditTicket(e, bill, bills);
-      //     console.log(testBill);
-      //   });
-      // });
+    bills.forEach((bill) => {
+      let openBillsId = document.getElementById(`open-bill${bill.id}`);
+      //console.log(bill);
+      //console.log(openBillsId);
+      if (!bill.done && openBillsId !== null) {
+        //console.log(openBillsId);
+        openBillsId.addEventListener("click", (e) =>
+          this.handleEditTicket(e, bill, bills)
+        );
+        console.log(bill.done);
+        bill.done = true;
+      }
     });
+
+    // bills.forEach((bill) => {
+    //   console.log(bills.indexOf(`#open-bill${bill.id}`));
+    //   // $(`#open-bill${bill.id}`).click((e) => {
+    //   //   this.handleEditTicket(e, bill, bills);
+    //   // });
+    // });
+
+    //let testBill;
+
+    // window.addEventListener("click", (e) => {
+    //   testBill = "";
+    //console.log(e.currentTarget);
+
+    // console.log(e.target.parentNode);
+    // $(this).parents(".bill-card").fadeOut(100);
+    // bills.forEach((bill) => {
+    //   testBill = bill.id;
+    //   $(`#open-bill${testBill}`).click((e) => {
+    //     this.handleEditTicket(e, bill, bills);
+    //     console.log(testBill);
+    //   });
+    // });
+    // });
 
     // bills.forEach((bill) => {
     //   $(`#open-bill${bill.id}`).click((e) => {
