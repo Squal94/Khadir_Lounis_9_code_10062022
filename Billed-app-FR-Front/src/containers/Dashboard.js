@@ -154,24 +154,24 @@ export default class {
       this.counter++;
     }
 
-    function testId() {
-      $("body").on("click", ".bill-card", function () {
-        let id = $(this).attr("id");
-        bills.forEach((bill) => {
-          $(`#open-bill${id}`).click((e) => {
-            this.handleEditTicket(e, bill, bills);
-          });
-        });
-      });
-    }
-
     // bills.forEach((bill) => {
     //   $(`#open-bill${bill.id}`).click((e) => {
     //     this.handleEditTicket(e, bill, bills);
     //     //console.log(bill.id);
     //   });
     // });
-    testId();
+
+    // function testId() {
+    //   $("body").on("click", ".bill-card", function () {
+    //     let id = $(this).attr("id");
+    //     bills.forEach((bill) => {
+    //       $(`#open-bill${id}`).click((e) => {
+    //         this.handleEditTicket(e, bill, bills);
+    //       });
+    //     });
+    //   });
+    // }
+    //testId();
     return bills;
   }
 
