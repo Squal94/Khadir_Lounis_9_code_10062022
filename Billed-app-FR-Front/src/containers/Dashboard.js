@@ -153,15 +153,40 @@ export default class {
       $(`#status-bills-container${this.index}`).html("");
       this.counter++;
     }
+    let testBill;
 
-    bills.forEach((bill) => {
-      let test = "";
-      test = bill.id;
-      $(`#open-bill${test}`).click((e) => {
-        this.handleEditTicket(e, bill, bills);
-        //console.log(bill.id);
-      });
+    window.addEventListener("click", (e) => {
+      testBill = "";
+      console.log(e.currentTarget);
+
+      // console.log(e.target.parentNode);
+      // $(this).parents(".bill-card").fadeOut(100);
+      // bills.forEach((bill) => {
+      //   testBill = bill.id;
+      //   $(`#open-bill${testBill}`).click((e) => {
+      //     this.handleEditTicket(e, bill, bills);
+      //     console.log(testBill);
+      //   });
+      // });
     });
+
+    // bills.forEach((bill) => {
+    //   $(`#open-bill${bill.id}`).click((e) => {
+    //     this.handleEditTicket(e, bill, bills);
+    //     //console.log(bill.id);
+    //   });
+    // });
+
+    // let lastClick = 0;
+    // testId.addEventListener("click", (e) => {
+    //   const thisClick = Date.now();
+    //   if (thisClick - lastClick < 1000) {
+    //     console.log("quick click detected, returning early");
+    //     return;
+    //   }
+    //   lastClick = thisClick;
+    //   console.log("click");
+    // });
 
     // function testId() {
     //   $("body").on("click", ".bill-card", function () {
