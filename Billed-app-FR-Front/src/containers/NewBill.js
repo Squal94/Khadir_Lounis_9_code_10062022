@@ -19,33 +19,45 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     e.preventDefault();
+    // Création du tableau des extensions valides
+
+    let validExtension = ["jpeg", "png", "jpg"];
+    const alertExtension = document.querySelector(".alertExtension");
     const file = this.document.querySelector(`input[data-testid="file"]`)
       .files[0];
-    console.log(file);
     const filePath = e.target.value.split(/\\/g);
-    console.log(filePath);
     const fileName = filePath[filePath.length - 1];
-    console.log(fileName);
-    const formData = new FormData();
-    const email = JSON.parse(localStorage.getItem("user")).email;
-    formData.append("file", file);
-    formData.append("email", email);
+    // Récupération de L'extension du fichier uploader
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true,
-        },
-      })
-      .then(({ fileUrl, key }) => {
-        console.log(fileUrl);
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
-      })
-      .catch((error) => console.error(error));
+    let extension = fileName.split(".").pop();
+    // Test de l'extension
+
+    if (validExtension.includes(extension) == true) {
+      alertExtension.textContent = "";
+      const formData = new FormData();
+      const email = JSON.parse(localStorage.getItem("user")).email;
+      formData.append("file", file);
+      formData.append("email", email);
+
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true,
+          },
+        })
+        .then(({ fileUrl, key }) => {
+          console.log(fileUrl);
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
+        })
+        .catch((error) => console.error(error));
+    } else {
+      alertExtension.textContent =
+        "Le fichier selectionné doit avoir l'extension png, jpg, jpeg";
+    }
   };
   handleSubmit = (e) => {
     e.preventDefault();
