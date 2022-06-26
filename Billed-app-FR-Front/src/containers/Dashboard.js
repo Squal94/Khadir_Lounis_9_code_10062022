@@ -154,17 +154,24 @@ export default class {
       this.counter++;
     }
 
-    bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).click((e) => {
-        this.handleEditTicket(e, bill, bills);
-        console.log(bill.id);
+    function testId() {
+      $("body").on("click", ".bill-card", function () {
+        let id = $(this).attr("id");
+        bills.forEach((bill) => {
+          $(`#open-bill${id}`).click((e) => {
+            this.handleEditTicket(e, bill, bills);
+          });
+        });
       });
-    });
+    }
 
-    // window.addEventListener("click", (e) => {
-    //   console.log(e.target);
+    // bills.forEach((bill) => {
+    //   $(`#open-bill${bill.id}`).click((e) => {
+    //     this.handleEditTicket(e, bill, bills);
+    //     //console.log(bill.id);
+    //   });
     // });
-
+    testId();
     return bills;
   }
 
