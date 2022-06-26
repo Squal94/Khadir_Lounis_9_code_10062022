@@ -154,12 +154,14 @@ export default class {
       this.counter++;
     }
 
-    // bills.forEach((bill) => {
-    //   $(`#open-bill${bill.id}`).click((e) => {
-    //     this.handleEditTicket(e, bill, bills);
-    //     //console.log(bill.id);
-    //   });
-    // });
+    bills.forEach((bill) => {
+      let test = "";
+      test = bill.id;
+      $(`#open-bill${test}`).click((e) => {
+        this.handleEditTicket(e, bill, bills);
+        //console.log(bill.id);
+      });
+    });
 
     // function testId() {
     //   $("body").on("click", ".bill-card", function () {
