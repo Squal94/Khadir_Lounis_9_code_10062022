@@ -163,10 +163,17 @@ export default class {
         openBillsId.addEventListener("click", (e) =>
           this.handleEditTicket(e, bill, bills)
         );
-        console.log(bill.done);
         bill.done = true;
       }
     });
+
+    // bills.forEach((bill) => {
+    //   $(`#open-bill${bill.id}`).click((e) => {
+    //     this.handleEditTicket(e, bill, bills);
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //   });
+    // });
 
     // bills.forEach((bill) => {
     //   console.log(bills.indexOf(`#open-bill${bill.id}`));

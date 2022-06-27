@@ -28,8 +28,11 @@ describe("Given I am connected as an employee", () => {
       router();
       window.onNavigate(ROUTES_PATH.Bills);
       await waitFor(() => screen.getByTestId("icon-window"));
+      //expect n'est pas fourni et la constante windowIcon n'est pas utilisé
       const windowIcon = screen.getByTestId("icon-window");
       //to-do write expect expression
+      expect(windowIcon).toBeTruthy();
+      //expect(windowIcon.id).toBeEqual("icon-window");
     });
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({
