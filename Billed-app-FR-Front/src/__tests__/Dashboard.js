@@ -137,9 +137,9 @@ describe("Given I am connected as an Admin", () => {
       userEvent.click(icon1);
       expect(handleShowTickets1).toHaveBeenCalled();
       expect(screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`)).toBeTruthy();
-      // const iconEdit = screen.getByTestId("open-bill47qAXb6fIm2zOKkLzMro");
-      // userEvent.click(iconEdit);
-      // expect(screen.getByTestId(`dashboard-form`)).toBeTruthy();
+      const iconEdit = screen.getByTestId("open-bill47qAXb6fIm2zOKkLzMro");
+      userEvent.click(iconEdit);
+      expect(screen.getByTestId(`dashboard-form`)).toBeTruthy();
     });
   });
 

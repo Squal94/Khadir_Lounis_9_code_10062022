@@ -155,17 +155,30 @@ export default class {
     }
 
     bills.forEach((bill) => {
-      let openBillsId = document.getElementById(`open-bill${bill.id}`);
-      //console.log(bill);
-      //console.log(openBillsId);
-      if (!bill.done && openBillsId !== null) {
-        //console.log(openBillsId);
-        openBillsId.addEventListener("click", (e) =>
-          this.handleEditTicket(e, bill, bills)
-        );
-        bill.done = true;
-      }
+      $(`#open-bill${bill.id}`)
+        .off()
+        .on()
+        .click((e) => this.handleEditTicket(e, bill, bills));
     });
+
+    // bills.forEach((bill) => {
+    //   $(`#open-bill${bill.id}`).on.off.click((e) => {
+    //     this.handleEditTicket(e, bill, bills);
+    //   });
+    // });
+
+    // bills.forEach((bill) => {
+    //   let openBillsId = document.getElementById(`open-bill${bill.id}`);
+    //   //console.log(bill);
+    //   //console.log(openBillsId);
+    //   if (!bill.done && openBillsId !== null) {
+    //     //console.log(openBillsId);
+    //     openBillsId.addEventListener("click", (e) =>
+    //       this.handleEditTicket(e, bill, bills)
+    //     );
+    //     bill.done = true;
+    //   }
+    // });
 
     // bills.forEach((bill) => {
     //   $(`#open-bill${bill.id}`).click((e) => {
