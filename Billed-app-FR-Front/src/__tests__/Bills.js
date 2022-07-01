@@ -3,9 +3,10 @@
  */
 
 import { screen, waitFor } from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
@@ -13,6 +14,9 @@ import router from "../app/Router.js";
 //Nouvelles Imports pour la suites des tests
 
 import Bills from "../containers/Bills.js";
+const onNavigate = (pathname) => {
+  document.body.innerHTML = ROUTES({ pathname });
+};
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -54,24 +58,51 @@ describe("Given I am connected as an employee", () => {
 
 // test de click handleClickNewBill
 
+// describe("Given I reate a new bill", () => {
+//   describe("When I click on buttonNewBill", () => {
+//     test("Then launch function handleClickNewBill", async () => {
+//       const btnBills = document.createElement("button");
+//       btnBills.setAttribute("data-testid", "btn-new-bill");
+//       document.body.append(btnBills);
+
+//       btnBills.click;
+
+//       new Bills({
+//         document,
+//         onNavigate,
+//         store: null,
+//         localStorage,
+//       });
+
+//       expect(handleClickNewBill).toHaveBeenCalled();
+//       //expect(handleClickIconEye()).toHaveBeenCalled();
+//     });
+//   });
+// });
+
 describe("Given I reate a new bill", () => {
   describe("When I click on buttonNewBill", () => {
     test("Then launch function handleClickNewBill", async () => {
-      const btnBills = document.createElement("button");
-      btnBills.setAttribute("data-testid", "btn-new-bill");
-      document.body.append(btnBills);
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      document.body.innerHTML = BillsUI({ data: bills });
 
-      btnBills.click;
-
-      new Bills({
+      const newBill = new Bills({
         document,
         onNavigate,
         store: null,
-        localStorage,
+        localStorage: window.localStorage,
       });
 
+      const handleClickNewBill = jest.fn(newBill.handleClickNewBill);
+
+      const btnNewBill = screen.getByTestId("btn-new-bill");
+      btnNewBill.addEventListener("click", handleClickNewBill);
+      userEvent.click(btnNewBill);
+
       expect(handleClickNewBill).toHaveBeenCalled();
-      //expect(handleClickIconEye()).toHaveBeenCalled();
+      expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
     });
   });
 });
