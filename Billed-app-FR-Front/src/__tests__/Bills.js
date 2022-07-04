@@ -14,8 +14,10 @@ import router from "../app/Router.js";
 //Nouvelles Imports pour la suites des tests
 
 import Bills from "../containers/Bills.js";
+//import ErrorPage from "../ErrorPage.js";
 //import { modal } from "../views/DashboardFormUI.js";
 //import modal from "../views/BillsUI.js";
+import mockStore from "../__mocks__/store.js";
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
@@ -86,6 +88,8 @@ describe("Given I reate a new bill", () => {
   });
 });
 
+// test de la modal iconEye
+
 describe("Given I want to see an bill", () => {
   describe("When I click iconEye", () => {
     test("Then launch modal iconEye ", async () => {
@@ -124,24 +128,25 @@ describe("Given I want to see an bill", () => {
   });
 });
 
-describe("Given I am a user connected as Admin", () => {
-  describe("When I navigate to Dashboard", () => {
+// Test Integration get Bill
+
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to employee bills ", () => {
     test("fetches bills from mock API GET", async () => {
       localStorage.setItem(
         "user",
-        JSON.stringify({ type: "Admin", email: "a@a" })
+        JSON.stringify({ type: "Employee", email: "a@a" })
       );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
       document.body.append(root);
       router();
-      window.onNavigate(ROUTES_PATH.Dashboard);
-      await waitFor(() => screen.getByText("Validations"));
-      const contentPending = await screen.getByText("En attente (1)");
-      expect(contentPending).toBeTruthy();
-      const contentRefused = await screen.getByText("Refusé (2)");
-      expect(contentRefused).toBeTruthy();
-      expect(screen.getByTestId("big-billed-icon")).toBeTruthy();
+      await waitFor(() => screen.getByText("Mes notes de frais"));
+      const typeCol = screen.getByText("Type");
+      expect(typeCol).toBeTruthy();
+      const NewBill = screen.getByText("Nouvelle note de frais");
+      expect(NewBill).toBeTruthy();
+      expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
     });
     describe("When an error occurs on API", () => {
       beforeEach(() => {
@@ -152,7 +157,7 @@ describe("Given I am a user connected as Admin", () => {
         window.localStorage.setItem(
           "user",
           JSON.stringify({
-            type: "Admin",
+            type: "Employee",
             email: "a@a",
           })
         );
@@ -161,7 +166,7 @@ describe("Given I am a user connected as Admin", () => {
         document.body.appendChild(root);
         router();
       });
-      test("fetches bills from an API and fails with 404 message error", async () => {
+      test("fetches bills from an API and fails with 404 message error", () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => {
@@ -169,10 +174,10 @@ describe("Given I am a user connected as Admin", () => {
             },
           };
         });
-        window.onNavigate(ROUTES_PATH.Dashboard);
-        await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 404/);
-        expect(message).toBeTruthy();
+        const error404Page = BillsUI({ error: "Erreur 404" });
+        document.body.innerHTML = error404Page;
+        const verificationUrl = screen.getByText(/Erreur 404/);
+        expect(verificationUrl).toBeTruthy();
       });
 
       test("fetches messages from an API and fails with 500 message error", async () => {
@@ -184,10 +189,14 @@ describe("Given I am a user connected as Admin", () => {
           };
         });
 
-        window.onNavigate(ROUTES_PATH.Dashboard);
-        await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 500/);
-        expect(message).toBeTruthy();
+        // window.onNavigate();
+        // await new Promise(process.nextTick);
+        // const message = await screen.getByText(/Erreur 500/);
+        // expect(message).toBeTruthy();
+        const error500Page = BillsUI({ error: "Erreur 500" });
+        document.body.innerHTML = error500Page;
+        const verificationUrl = screen.getByText(/Erreur 500/);
+        expect(verificationUrl).toBeTruthy();
       });
     });
   });
