@@ -14,6 +14,8 @@ import router from "../app/Router.js";
 //Nouvelles Imports pour la suites des tests
 
 import Bills from "../containers/Bills.js";
+import { modal } from "../views/DashboardFormUI.js";
+//import modal from "../views/BillsUI.js";
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
@@ -56,33 +58,10 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-// test de click handleClickNewBill
-
-// describe("Given I reate a new bill", () => {
-//   describe("When I click on buttonNewBill", () => {
-//     test("Then launch function handleClickNewBill", async () => {
-//       const btnBills = document.createElement("button");
-//       btnBills.setAttribute("data-testid", "btn-new-bill");
-//       document.body.append(btnBills);
-
-//       btnBills.click;
-
-//       new Bills({
-//         document,
-//         onNavigate,
-//         store: null,
-//         localStorage,
-//       });
-
-//       expect(handleClickNewBill).toHaveBeenCalled();
-//       //expect(handleClickIconEye()).toHaveBeenCalled();
-//     });
-//   });
-// });
-
+// test Modal new bill launch
 describe("Given I reate a new bill", () => {
   describe("When I click on buttonNewBill", () => {
-    test("Then launch function handleClickNewBill", async () => {
+    test("Then launch modal new bill", async () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -103,6 +82,44 @@ describe("Given I reate a new bill", () => {
 
       expect(handleClickNewBill).toHaveBeenCalled();
       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
+    });
+  });
+});
+
+describe("Given I want to see an bill", () => {
+  describe("When I click iconEye", () => {
+    test("Then launch modal iconEye ", async () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      document.body.innerHTML = BillsUI({ data: bills });
+
+      const newBill = new Bills({
+        document,
+        onNavigate,
+        store: null,
+        localStorage: window.localStorage,
+      });
+
+      const handleClickIconEye = jest.fn(newBill.handleClickIconEye);
+      //const modal = jest.fn(modal);
+      //jest.fn(BillsUI.modal);
+      // jest.fn(BillsUI(modal));
+      // const modaleFile = document.getElementById("modaleFile");
+      // modaleFile.jest.fn(BillsUI(modal));
+
+      const modaleFile = document.getElementById("modaleFile");
+      $.fn.modal = jest.fn(() => modaleFile.classList.add("show"));
+
+      const clickIconEye = screen.getAllByTestId("icon-eye");
+      if (clickIconEye)
+        clickIconEye.forEach((icon) => {
+          icon.addEventListener("click", () => handleClickIconEye(icon));
+          userEvent.click(icon);
+          expect(handleClickIconEye).toHaveBeenCalled();
+        });
+
+      expect(screen.getByText("Justificatif")).toBeTruthy;
     });
   });
 });
