@@ -137,15 +137,18 @@ describe("Given I am a user connected as Employee", () => {
         "user",
         JSON.stringify({ type: "Employee", email: "a@a" })
       );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.append(root);
-      router();
+      document.body.innerHTML = BillsUI({ data: bills });
+      // const root = document.createElement("div");
+      // root.setAttribute("id", "root");
+      // document.body.append(root);
+      // router();
       await waitFor(() => screen.getByText("Mes notes de frais"));
       const typeCol = screen.getByText("Type");
       expect(typeCol).toBeTruthy();
       const NewBill = screen.getByText("Nouvelle note de frais");
       expect(NewBill).toBeTruthy();
+      // const Vol = screen.getByText("Vol Paris Marseille");
+      // expect(Vol).toBeTruthy();
       expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
     });
     describe("When an error occurs on API", () => {
@@ -161,10 +164,11 @@ describe("Given I am a user connected as Employee", () => {
             email: "a@a",
           })
         );
-        const root = document.createElement("div");
-        root.setAttribute("id", "root");
-        document.body.appendChild(root);
-        router();
+        document.body.innerHTML = BillsUI({ data: bills });
+        // const root = document.createElement("div");
+        // root.setAttribute("id", "root");
+        // document.body.appendChild(root);
+        // router();
       });
       test("fetches bills from an API and fails with 404 message error", () => {
         mockStore.bills.mockImplementationOnce(() => {
@@ -176,11 +180,11 @@ describe("Given I am a user connected as Employee", () => {
         });
         const error404Page = BillsUI({ error: "Erreur 404" });
         document.body.innerHTML = error404Page;
-        const verificationUrl = screen.getByText(/Erreur 404/);
-        expect(verificationUrl).toBeTruthy();
+        const verificationUrl404 = screen.getByText(/Erreur 404/);
+        expect(verificationUrl404).toBeTruthy();
       });
 
-      test("fetches messages from an API and fails with 500 message error", async () => {
+      test("fetches messages from an API and fails with 500 message error", () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => {
@@ -195,8 +199,8 @@ describe("Given I am a user connected as Employee", () => {
         // expect(message).toBeTruthy();
         const error500Page = BillsUI({ error: "Erreur 500" });
         document.body.innerHTML = error500Page;
-        const verificationUrl = screen.getByText(/Erreur 500/);
-        expect(verificationUrl).toBeTruthy();
+        const verificationUrl500 = screen.getByText(/Erreur 500/);
+        expect(verificationUrl500).toBeTruthy();
       });
     });
   });
