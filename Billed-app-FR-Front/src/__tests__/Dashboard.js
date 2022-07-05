@@ -242,6 +242,7 @@ describe("Given I am connected as Admin, and I am on Dashboard page, and I click
         })
       );
       document.body.innerHTML = DashboardFormUI(bills[0]);
+      // console.log(DashboardFormUI(bills[0]));
 
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });

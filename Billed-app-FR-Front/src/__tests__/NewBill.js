@@ -112,7 +112,12 @@ describe("Given I am connected as an employee", () => {
       file.addEventListener("change", handleChangeFile);
       fireEvent.change(file);
       expect(handleChangeFile).toHaveBeenCalled();
+      // test jpg
+      handleChangeFile.mockReturnValue("test.jpg");
       expect(handleChangeFile()).toContain("jpg");
+      // test n'est pas format image
+      handleChangeFile.mockReturnValue("test.pdf");
+      expect(handleChangeFile()).not.toContain("jpg");
     });
   });
 });
