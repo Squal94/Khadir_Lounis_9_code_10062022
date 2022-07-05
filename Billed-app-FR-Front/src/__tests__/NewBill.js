@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { screen } from "@testing-library/dom";
+import { fireEvent, screen } from "@testing-library/dom";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 
 // Nouvel Import
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
+import userEvent from "@testing-library/user-event";
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
@@ -18,17 +20,53 @@ describe("Given I am connected as an employee", () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
       const html = NewBillUI();
       document.body.innerHTML = html;
+
+      expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
+      expect(screen.getByText("Type de dépense")).toBeTruthy;
+      expect(screen.getByTestId("expense-type")).toBeTruthy();
+    });
+  });
+});
+
+describe("Given I am connected as an employee", () => {
+  describe("When I am on NewBill Page", () => {
+    test("Then NewBill Page was correctly open", () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+
       const newNewBill = new NewBill({
         document,
         onNavigate,
         store: null,
         localStorage: window.localStorage,
       });
-      expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
 
-      //to-do write assertion
+      const handleSubmit = jest.fn(newNewBill.handleSubmit);
+      //const btnEnvoyer = document.querySelector("btn-send-bill");
+
+      const submitNewBill = screen.getByTestId("form-new-bill");
+      submitNewBill.addEventListener("click", handleSubmit);
+      userEvent.click(submitNewBill);
+
+      expect(handleSubmit).toHaveBeenCalled();
+      //       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
     });
   });
 });
