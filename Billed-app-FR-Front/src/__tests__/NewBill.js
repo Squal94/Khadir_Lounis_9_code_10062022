@@ -38,7 +38,7 @@ describe("Given I am connected as an employee", () => {
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test("Then NewBill Page was correctly open", () => {
+    test("Then click on submit ok", () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -66,7 +66,53 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(submitNewBill);
 
       expect(handleSubmit).toHaveBeenCalled();
-      //       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
+    });
+  });
+});
+
+describe("Given I am connected as an employee", () => {
+  describe("When I am on NewBill Page", () => {
+    test("Then i upload a new image bill", () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+
+      const newNewBill = new NewBill({
+        document,
+        onNavigate,
+        store: null,
+        localStorage: window.localStorage,
+      });
+      const handleChangeFile = jest.fn(newNewBill.handleChangeFile);
+      handleChangeFile.mockReturnValue("test.jpg");
+
+      // const handleChangeFile = jest
+      //   .fn(newNewBill.handleChangeFile)
+      //   .mockResolvedValueOnce("test.jpg")
+      //   .mockResolvedValueOnce("test.jpeg")
+      //   .mockResolvedValueOnce("test.png");
+
+      // const file = document.querySelector(`input[data-testid="file"]`);
+      // file.addEventListener("change", handleChangeFile);
+      // const file = document.getByTestId(`input[data-testid="file"]`);
+      // file.addEventListener("change", handleChangeFile);
+
+      //file.textContent = "test.jpg";
+      // userEvent.click(file);
+
+      const file = screen.getByTestId("file");
+      file.addEventListener("change", handleChangeFile);
+      fireEvent.change(file);
+      expect(handleChangeFile).toHaveBeenCalled();
+      expect(handleChangeFile()).toContain("jpg");
     });
   });
 });
