@@ -18,6 +18,7 @@ import Bills from "../containers/Bills.js";
 //import { modal } from "../views/DashboardFormUI.js";
 //import modal from "../views/BillsUI.js";
 import mockStore from "../__mocks__/store.js";
+
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };

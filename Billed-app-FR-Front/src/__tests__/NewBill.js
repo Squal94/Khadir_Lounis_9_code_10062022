@@ -10,6 +10,10 @@ import NewBill from "../containers/NewBill.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import userEvent from "@testing-library/user-event";
+import { bills } from "../fixtures/bills.js";
+import mockStore from "../__mocks__/store.js";
+//jest.mock("../__mocks__/store.js", () => mockStore);
+//jest.mock("../app/store.js", () => mockStore);
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
@@ -126,7 +130,17 @@ describe("Given I am connected as an employee", () => {
 
 describe("Test de fonctionnement", () => {
   describe("Test liée au import", () => {
-    test("Premier test spyOn et valeur mock", () => {});
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills");
+    });
+    test("mockStore", () => {
+      mockStore
+        .bills()
+        .list()
+        .then((r) => {
+          expect(r[0].id).toEqual("47qAXb6fIm2zOKkLzMro");
+        });
+    });
   });
 });
 
