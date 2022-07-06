@@ -169,7 +169,7 @@ describe("Given I am a user connected as Employee", () => {
         // root.setAttribute("id", "root");
         // document.body.appendChild(root);
         // router();
-        console.log(BillsUI({ data: bills[0] }));
+        //console.log(BillsUI({ data: bills[0] }));
       });
       test("fetches bills from an API and fails with 404 message error", () => {
         mockStore.bills.mockImplementationOnce(() => {

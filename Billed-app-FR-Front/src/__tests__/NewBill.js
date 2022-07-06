@@ -122,6 +122,14 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
+// Test de fonctionnement
+
+describe("Test de fonctionnement", () => {
+  describe("Test liée au import", () => {
+    test("Premier test spyOn et valeur mock", () => {});
+  });
+});
+
 // describe("Given I reate a new bill", () => {
 //   describe("When I click on buttonNewBill", () => {
 //     test("Then launch modal new bill", async () => {
