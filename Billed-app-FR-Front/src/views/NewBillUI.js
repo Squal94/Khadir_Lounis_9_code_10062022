@@ -57,7 +57,7 @@ export default () => {
                     <input required type="file" class="form-control blue-border" data-testid="file" />
                   </div>
                   <div class="col-half">
-                    <p class="alertExtension"></p>
+                    <p class="alertExtension" data-testid="alertExtension"></p>
                   </div>
                 </div>
             </div>

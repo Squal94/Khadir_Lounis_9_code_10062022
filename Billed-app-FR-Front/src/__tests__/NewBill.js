@@ -76,7 +76,10 @@ describe("Given I am connected as an employee", () => {
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test("Then i upload a new image bill", () => {
+    test("Then i upload a new image bill (.jpg)", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills");
+      });
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -92,57 +95,115 @@ describe("Given I am connected as an employee", () => {
       const newNewBill = new NewBill({
         document,
         onNavigate,
-        store: null,
+        store: mockStore,
         localStorage: window.localStorage,
       });
-      const handleChangeFile = jest.fn(newNewBill.handleChangeFile);
-      handleChangeFile.mockReturnValue("test.jpg");
+      const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
+      const newBillsfile = screen.getByTestId("file");
+      const alertExtension = screen.getByTestId("alertExtension");
+      alertExtension.textContent = "";
+      const file = new File(["picture"], "test.jpg");
 
-      // const handleChangeFile = jest
-      //   .fn(newNewBill.handleChangeFile)
-      //   .mockResolvedValueOnce("test.jpg")
-      //   .mockResolvedValueOnce("test.jpeg")
-      //   .mockResolvedValueOnce("test.png");
+      newBillsfile.addEventListener("click", handleChangeFile);
+      userEvent.click(newBillsfile);
 
-      // const file = document.querySelector(`input[data-testid="file"]`);
-      // file.addEventListener("change", handleChangeFile);
-      // const file = document.getByTestId(`input[data-testid="file"]`);
-      // file.addEventListener("change", handleChangeFile);
-
-      //file.textContent = "test.jpg";
-      // userEvent.click(file);
-
-      const file = screen.getByTestId("file");
-      file.addEventListener("change", handleChangeFile);
-      fireEvent.change(file);
       expect(handleChangeFile).toHaveBeenCalled();
-      // test jpg
-      handleChangeFile.mockReturnValue("test.jpg");
-      expect(handleChangeFile()).toContain("jpg");
-      // test n'est pas format image
-      handleChangeFile.mockReturnValue("test.pdf");
-      expect(handleChangeFile()).not.toContain("jpg");
+      expect(file.name).toContain("jpg");
+      expect(alertExtension.textContent).toBe("");
+
+      //console.log(file.name);
+
+      // exemple mdn
+      //      new File(["foo"], "foo.txt", {
+      // type: "text/plain",
+
+      //file.innerHTML("test.jpg");
+
+      // file.addEventListener("change", handleChangeFile);
+      // userEvent.upload(newBillsfile, file);
+      // expect(handleChangeFile).toHaveBeenCalled();
+
+      // // test jpg
+      // handleChangeFile.mockReturnValue("test.jpg");
+
+      // // test n'est pas format image
+      // handleChangeFile.mockReturnValue("test.pdf");
+      // expect(handleChangeFile()).not.toContain("jpg");
     });
   });
 });
 
-// Test de fonctionnement
+// Test de fonctionnement spy et lecture mock file
 
-describe("Test de fonctionnement", () => {
-  describe("Test liée au import", () => {
-    beforeEach(() => {
-      jest.spyOn(mockStore, "bills");
-    });
-    test("mockStore", () => {
-      mockStore
-        .bills()
-        .list()
-        .then((r) => {
-          expect(r[0].id).toEqual("47qAXb6fIm2zOKkLzMro");
-        });
-    });
-  });
-});
+// describe("Test de fonctionnement", () => {
+//   describe("Test liée au import", () => {
+//     beforeEach(() => {
+//       jest.spyOn(mockStore, "bills");
+//     });
+//     test("mockStore", () => {
+//       mockStore
+//         .bills()
+//         .list()
+//         .then((r) => {
+//           expect(r[0].id).toEqual("47qAXb6fIm2zOKkLzMro");
+//         });
+//     });
+//   });
+// });
+
+// describe("Given I am connected as an employee", () => {
+//   describe("When I am on NewBill Page", () => {
+//     test("Then i upload a new image bill", () => {
+//       Object.defineProperty(window, "localStorage", {
+//         value: localStorageMock,
+//       });
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//         })
+//       );
+//       const html = NewBillUI();
+//       document.body.innerHTML = html;
+
+//       const newNewBill = new NewBill({
+//         document,
+//         onNavigate,
+//         store: null,
+//         localStorage: window.localStorage,
+//       });
+//       const handleChangeFile = jest.fn(newNewBill.handleChangeFile);
+//       handleChangeFile.mockReturnValue("test.jpg");
+
+//       // const handleChangeFile = jest
+//       //   .fn(newNewBill.handleChangeFile)
+//       //   .mockResolvedValueOnce("test.jpg")
+//       //   .mockResolvedValueOnce("test.jpeg")
+//       //   .mockResolvedValueOnce("test.png");
+
+//       // const file = document.querySelector(`input[data-testid="file"]`);
+//       // file.addEventListener("change", handleChangeFile);
+//       // const file = document.getByTestId(`input[data-testid="file"]`);
+//       // file.addEventListener("change", handleChangeFile);
+
+//       //file.textContent = "test.jpg";
+//       // userEvent.click(file);
+
+//       const file = screen.getByTestId("file");
+//       file.addEventListener("change", handleChangeFile);
+//       fireEvent.change(file);
+//       expect(handleChangeFile).toHaveBeenCalled();
+//       // test jpg
+//       handleChangeFile.mockReturnValue("test.jpg");
+//       expect(handleChangeFile()).toContain("jpg");
+//       // test n'est pas format image
+//       handleChangeFile.mockReturnValue("test.pdf");
+//       expect(handleChangeFile()).not.toContain("jpg");
+//     });
+//   });
+// });
+
+//exemple bill test
 
 // describe("Given I reate a new bill", () => {
 //   describe("When I click on buttonNewBill", () => {
