@@ -13,7 +13,7 @@ import userEvent from "@testing-library/user-event";
 import { bills } from "../fixtures/bills.js";
 import mockStore from "../__mocks__/store.js";
 //jest.mock("../__mocks__/store.js", () => mockStore);
-//jest.mock("../app/store.js", () => mockStore);
+jest.mock("../app/store.js", () => mockStore);
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
@@ -137,7 +137,6 @@ describe("Given I am connected as an employee", () => {
       const newBillsfile = screen.getByTestId("file");
       const alertExtension = screen.getByTestId("alertExtension");
       const file = new File(["texte"], "test.txt");
-
       newBillsfile.addEventListener("click", handleChangeFile);
       userEvent.click(newBillsfile);
 
@@ -307,3 +306,29 @@ describe("Given I am connected as an employee", () => {
 //     });
 //   });
 // });
+
+//  test("Then a new bill should be stored in API", async () => {
+//    beforeEach(() => {
+//      jest.spyOn(mockStore, "bills");
+//    });
+//    document.body.innerHTML = NewBillUI();
+
+//    const newBill = new NewBill({
+//      document,
+//      onNavigate,
+//      store: mockStore,
+//      bills: bills[0],
+//      localStorage: window.localStorage,
+//    });
+
+//    const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+//    const create = jest.fn(mockStore.bills().create);
+
+//    const bill = await create();
+
+//    expect(create).toHaveBeenCalled();
+//    console.log(bill);
+
+//    expect(bill.key).toBe("1234");
+//    expect(bill.fileUrl).toBe("https://localhost:3456/images/test.jpg");
+//  });
