@@ -101,7 +101,6 @@ describe("Given I am connected as an employee", () => {
       const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
       const newBillsfile = screen.getByTestId("file");
       const alertExtension = screen.getByTestId("alertExtension");
-      alertExtension.textContent = "";
       const file = new File(["picture"], "test.jpg");
 
       newBillsfile.addEventListener("click", handleChangeFile);
@@ -109,26 +108,44 @@ describe("Given I am connected as an employee", () => {
 
       expect(handleChangeFile).toHaveBeenCalled();
       expect(file.name).toContain("jpg");
+      alertExtension.innerHTML = "";
       expect(alertExtension.textContent).toBe("");
+    });
+    test("Then i upload a new image bill not (jpg,png,jpeg)", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills");
+      });
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      const html = NewBillUI();
+      document.body.innerHTML = html;
 
-      //console.log(file.name);
+      const newNewBill = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+      const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
+      const newBillsfile = screen.getByTestId("file");
+      const alertExtension = screen.getByTestId("alertExtension");
+      const file = new File(["texte"], "test.txt");
 
-      // exemple mdn
-      //      new File(["foo"], "foo.txt", {
-      // type: "text/plain",
+      newBillsfile.addEventListener("click", handleChangeFile);
+      userEvent.click(newBillsfile);
 
-      //file.innerHTML("test.jpg");
-
-      // file.addEventListener("change", handleChangeFile);
-      // userEvent.upload(newBillsfile, file);
-      // expect(handleChangeFile).toHaveBeenCalled();
-
-      // // test jpg
-      // handleChangeFile.mockReturnValue("test.jpg");
-
-      // // test n'est pas format image
-      // handleChangeFile.mockReturnValue("test.pdf");
-      // expect(handleChangeFile()).not.toContain("jpg");
+      expect(handleChangeFile).toHaveBeenCalled();
+      expect(file.name).not.toContain("jpg");
+      expect(alertExtension.textContent).toBe(
+        "Le fichier selectionné doit avoir l'extension png, jpg, jpeg"
+      );
     });
   });
 });
@@ -228,6 +245,65 @@ describe("Given I am connected as an employee", () => {
 
 //       expect(handleClickNewBill).toHaveBeenCalled();
 //       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
+//     });
+//   });
+// });
+
+// describe("Given I am connected as an employee", () => {
+//   describe("When I am on NewBill Page", () => {
+//     test("Then i upload a new image bill (.jpg)", () => {
+//       beforeEach(() => {
+//         jest.spyOn(mockStore, "bills");
+//       });
+//       Object.defineProperty(window, "localStorage", {
+//         value: localStorageMock,
+//       });
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//         })
+//       );
+//       const html = NewBillUI();
+//       document.body.innerHTML = html;
+
+//       const newNewBill = new NewBill({
+//         document,
+//         onNavigate,
+//         store: mockStore,
+//         localStorage: window.localStorage,
+//       });
+//       const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
+//       const newBillsfile = screen.getByTestId("file");
+//       const alertExtension = screen.getByTestId("alertExtension");
+//       const file = new File(["picture"], "test.jpg");
+
+//       newBillsfile.addEventListener("click", handleChangeFile);
+//       userEvent.click(newBillsfile);
+
+//       expect(handleChangeFile).toHaveBeenCalled();
+//       expect(file.name).toContain("jpg");
+//       alertExtension.innerHTML = "";
+//       expect(alertExtension.textContent).toBe("");
+
+//       //console.log(file.name);
+
+//       // exemple mdn
+//       //      new File(["foo"], "foo.txt", {
+//       // type: "text/plain",
+
+//       //file.innerHTML("test.jpg");
+
+//       // file.addEventListener("change", handleChangeFile);
+//       // userEvent.upload(newBillsfile, file);
+//       // expect(handleChangeFile).toHaveBeenCalled();
+
+//       // // test jpg
+//       // handleChangeFile.mockReturnValue("test.jpg");
+
+//       // // test n'est pas format image
+//       // handleChangeFile.mockReturnValue("test.pdf");
+//       // expect(handleChangeFile()).not.toContain("jpg");
 //     });
 //   });
 // });
