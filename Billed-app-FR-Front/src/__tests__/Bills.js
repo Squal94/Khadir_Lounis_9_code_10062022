@@ -62,7 +62,7 @@ describe("Given I am connected as an employee", () => {
 });
 
 // test Modal new bill launch
-describe("Given I reate a new bill", () => {
+describe("Given I create a new bill", () => {
   describe("When I click on buttonNewBill", () => {
     test("Then launch modal new bill", async () => {
       Object.defineProperty(window, "localStorage", {
@@ -138,19 +138,23 @@ describe("Given I am a user connected as Employee", () => {
         "user",
         JSON.stringify({ type: "Employee", email: "a@a" })
       );
-      document.body.innerHTML = BillsUI({ data: bills });
-      // const root = document.createElement("div");
-      // root.setAttribute("id", "root");
-      // document.body.append(root);
-      // router();
-      await waitFor(() => screen.getByText("Mes notes de frais"));
-      const typeCol = screen.getByText("Type");
-      expect(typeCol).toBeTruthy();
-      const NewBill = screen.getByText("Nouvelle note de frais");
-      expect(NewBill).toBeTruthy();
-      // const Vol = screen.getByText("Vol Paris Marseille");
-      // expect(Vol).toBeTruthy();
-      expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
+      //document.body.innerHTML = BillsUI({ data: bills });
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+      window.onNavigate(ROUTES_PATH.Bills);
+      const title = await waitFor(() => screen.getByText("Mes notes de frais"));
+
+      // const typeCol = screen.getByText("Type");
+      // expect(typeCol).toBeTruthy();
+      // const NewBill = screen.getByText("Nouvelle note de frais");
+      // expect(NewBill).toBeTruthy();
+      // // const Vol = screen.getByText("Vol Paris Marseille");
+      // // expect(Vol).toBeTruthy();
+      expect(title).toBeTruthy();
+      const button = await waitFor(() => screen.getByTestId("btn-new-bill"));
+      expect(button).toBeTruthy();
     });
     describe("When an error occurs on API", () => {
       beforeEach(() => {
@@ -165,14 +169,14 @@ describe("Given I am a user connected as Employee", () => {
             email: "a@a",
           })
         );
-        document.body.innerHTML = BillsUI({ data: bills });
-        // const root = document.createElement("div");
-        // root.setAttribute("id", "root");
-        // document.body.appendChild(root);
-        // router();
+
+        const root = document.createElement("div");
+        root.setAttribute("id", "root");
+        document.body.appendChild(root);
+        router();
         //console.log(BillsUI({ data: bills[0] }));
       });
-      test("fetches bills from an API and fails with 404 message error", () => {
+      test("fetches bills from an API and fails with 404 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => {
@@ -180,13 +184,17 @@ describe("Given I am a user connected as Employee", () => {
             },
           };
         });
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
         const error404Page = BillsUI({ error: "Erreur 404" });
         document.body.innerHTML = error404Page;
-        const verificationUrl404 = screen.getByText(/Erreur 404/);
+        const verificationUrl404 = await waitFor(() =>
+          screen.getByText(/Erreur 404/)
+        );
         expect(verificationUrl404).toBeTruthy();
       });
 
-      test("fetches messages from an API and fails with 500 message error", () => {
+      test("fetches messages from an API and fails with 500 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => {
@@ -199,9 +207,13 @@ describe("Given I am a user connected as Employee", () => {
         // await new Promise(process.nextTick);
         // const message = await screen.getByText(/Erreur 500/);
         // expect(message).toBeTruthy();
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
         const error500Page = BillsUI({ error: "Erreur 500" });
         document.body.innerHTML = error500Page;
-        const verificationUrl500 = screen.getByText(/Erreur 500/);
+        const verificationUrl500 = await waitFor(() =>
+          screen.getByText(/Erreur 500/)
+        );
         expect(verificationUrl500).toBeTruthy();
       });
     });

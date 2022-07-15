@@ -32,7 +32,7 @@ export default class NewBill {
     let extension = fileName.split(".").pop();
     // Test de l'extension
 
-    if (validExtension.includes(extension) === true) {
+    if (validExtension.includes(extension)) {
       alertExtension.textContent = "";
       const formData = new FormData();
       const email = JSON.parse(localStorage.getItem("user")).email;
