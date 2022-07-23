@@ -114,6 +114,7 @@ describe("Given I am connected as an employee", () => {
       fireEvent.input(newBillsfile, file);
       expect(file.name).toContain("jpg");
       expect(alertExtension.textContent).toBe("");
+      // voir mentor input
     });
 
     test("Then i upload a new image bill not (jpg,png,jpeg)", () => {
@@ -156,7 +157,7 @@ describe("Given I am connected as an employee", () => {
 
 describe("Given I am a user connected as Employee", () => {
   describe("When I create a new bill", () => {
-    test("send new bill from mock API GET", async () => {
+    test("send new bill from mock API Post", async () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -205,6 +206,7 @@ describe("Given I am a user connected as Employee", () => {
       document.body.appendChild(root);
       router();
     });
+
     test("fetches bills from an API and fails with 404 message error", async () => {
       mockStore.bills.mockImplementationOnce(() => {
         return {
@@ -243,6 +245,54 @@ describe("Given I am a user connected as Employee", () => {
     });
   });
 });
+
+// describe("when I click on the submit button", () => {
+//   test("the bill should be sent", () => {
+//     Object.defineProperty(window, "localStorage", {
+//       value: localStorageMock,
+//     });
+//     window.localStorage.setItem(
+//       "user",
+//       JSON.stringify({
+//         type: "Employee",
+//         email: "a@a",
+//       })
+//     );
+//     const root = document.createElement("div");
+//     root.setAttribute("id", "root");
+//     document.body.append(root);
+//     router();
+
+//     document.body.innerHTML = NewBillUI();
+
+//     const expenseType = screen.getByTestId("expense-type");
+//     expenseType.value = "Transports";
+
+//     const expenseName = screen.getByTestId("expense-name");
+//     expenseName.value = "test1";
+
+//     const expenseAmount = screen.getByTestId("amount");
+//     expenseAmount.value = 100;
+
+//     const expenseDate = screen.getByTestId("datepicker");
+//     expenseDate.value = "2001-01-01";
+
+//     const expenseVAT = screen.getByTestId("vat");
+//     expenseVAT.value = "";
+
+//     const expensePCT = screen.getByTestId("pct");
+//     expensePCT.value = 20;
+
+//     const expenseCommentary = screen.getByTestId("commentary");
+//     expenseCommentary.value = "plop";
+
+//     const form = screen.getByTestId("form-new-bill");
+//     fireEvent.submit(form);
+
+//     expect(form).toBeTruthy();
+//     expect(expenseAmount.value).toEqual("100");
+//   });
+// });
 
 // Test de fonctionnement spy et lecture mock file
 
