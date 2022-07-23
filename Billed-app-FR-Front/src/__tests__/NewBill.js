@@ -2,11 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 
 // Nouvel Import
+import BillsUI from "../views/BillsUI.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import userEvent from "@testing-library/user-event";
@@ -149,6 +150,96 @@ describe("Given I am connected as an employee", () => {
       expect(alertExtension.textContent).toBe(
         "Le fichier selectionné doit avoir l'extension png, jpg, jpeg"
       );
+    });
+  });
+});
+
+describe("Given I am a user connected as Employee", () => {
+  describe("When I create a new bill", () => {
+    test("send new bill from mock API GET", async () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: "a@a",
+        })
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+
+      document.body.innerHTML = NewBillUI();
+
+      const newNewBill = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+
+      const btnBill = screen.getByTestId("form-new-bill");
+      const handleSubmit = jest.fn(newNewBill.handleSubmit);
+      btnBill.addEventListener("submit", handleSubmit);
+      fireEvent.submit(btnBill);
+      expect(handleSubmit).toHaveBeenCalled();
+    });
+  });
+
+  describe("When an error occurs on API", () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills");
+
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: "a@a",
+        })
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.appendChild(root);
+      router();
+    });
+    test("fetches bills from an API and fails with 404 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 404"));
+          },
+        };
+      });
+      window.onNavigate(ROUTES_PATH.Bills);
+      await new Promise(process.nextTick);
+      const error404Page = BillsUI({ error: "Erreur 404" });
+      document.body.innerHTML = error404Page;
+      const verificationUrl404 = await waitFor(() =>
+        screen.getByText(/Erreur 404/)
+      );
+      expect(verificationUrl404).toBeTruthy();
+    });
+
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 500"));
+          },
+        };
+      });
+
+      window.onNavigate(ROUTES_PATH.Bills);
+      await new Promise(process.nextTick);
+      const error500Page = BillsUI({ error: "Erreur 500" });
+      document.body.innerHTML = error500Page;
+      const verificationUrl500 = await waitFor(() =>
+        screen.getByText(/Erreur 500/)
+      );
+      expect(verificationUrl500).toBeTruthy();
     });
   });
 });
