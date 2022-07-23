@@ -78,9 +78,9 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     test("Then i upload a new image bill (.jpg)", () => {
-      // beforeEach(() => {
-      //   jest.spyOn(mockStore, "bills");
-      // });
+      //   beforeEach(() => {
+      //     jest.spyOn(mockStore, "bills");
+      //   });
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -104,25 +104,17 @@ describe("Given I am connected as an employee", () => {
         store: mockStore,
         localStorage: window.localStorage,
       });
-      const newBillsfile = document.querySelector(`input[data-testid="file"]`);
+      //const newBillsfile = document.querySelector(`input[data-testid="file"]`);
       const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
-      // const newBillsfile = screen.getByTestId("file");
-
-      newBillsfile.addEventListener("change", handleChangeFile);
-
-      // const file = new File(["picture"], "test.jpg");
-
-      fireEvent.change(newBillsfile, {
-        target: {
-          value: [new File([], "test.jpg", { type: "image/jpg" })],
-        },
-      });
+      const newBillsfile = screen.getByTestId("file");
       const alertExtension = screen.getByTestId("alertExtension");
-
-      expect(handleChangeFile).toHaveBeenCalled();
-      //alertExtension.innerHTML = "";
+      const file = new File(["picture"], "test.jpg", { type: "image/jpg" });
+      newBillsfile.addEventListener("change", handleChangeFile);
+      fireEvent.input(newBillsfile, file);
+      expect(file.name).toContain("jpg");
       expect(alertExtension.textContent).toBe("");
     });
+
     test("Then i upload a new image bill not (jpg,png,jpeg)", () => {
       beforeEach(() => {
         jest.spyOn(mockStore, "bills");
@@ -319,44 +311,44 @@ describe("Given I am connected as an employee", () => {
 //   });
 // });
 
-//  test("Then a new bill should be stored in API", async () => {
-//    beforeEach(() => {
-//      jest.spyOn(mockStore, "bills");
-//    });
-//    document.body.innerHTML = NewBillUI();
+// test("Then a new bill should be stored in API", async () => {
+//   beforeEach(() => {
+//     jest.spyOn(mockStore, "bills");
+//   });
+//   document.body.innerHTML = NewBillUI();
 
-//    const newBill = new NewBill({
-//      document,
-//      onNavigate,
-//      store: mockStore,
-//      bills: bills[0],
-//      localStorage: window.localStorage,
-//    });
+//   const newBill = new NewBill({
+//     document,
+//     onNavigate,
+//     store: mockStore,
+//     bills: bills[0],
+//     localStorage: window.localStorage,
+//   });
 
-//    const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
-//    const create = jest.fn(mockStore.bills().create);
+//   const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+//   const create = jest.fn(mockStore.bills().create);
 
-//    const bill = await create();
+//   const bill = await create();
 
-//    expect(create).toHaveBeenCalled();
-//    console.log(bill);
+//   expect(create).toHaveBeenCalled();
+//   console.log(bill);
 
-// expect(bills.key).toBe("54e4c9f17bdafb5f0f2f");
-// expect(bills.vat).toBe("70");
-// expect(bills.fileUrl).toBe("https://localhost:3456/images/test.jpg");
-// expect(bills.status).toBe("pending");
-// expect(bills.type).toBe("Equipement et matériel");
-// expect(bills.commentary).toBe(
-//   "Achat d'un ordinateur portable pour les déplacements"
-// );
-// expect(bills.name).toBe("Ordinateur portable");
-// expect(bills.fileName).toBe("preview-facture-free-201801-pdf-1.jpg");
-// expect(bills.date).toBe("2004-04-04");
-// expect(bills.amount).toBe(348);
-// expect(bills.commentAdmin).toBe("");
-// expect(bills.email).toBe("a@a");
-// expect(bills.pct).toBe(20);
-//  });
+//   expect(bills.key).toBe("54e4c9f17bdafb5f0f2f");
+//   expect(bills.vat).toBe("70");
+//   expect(bills.fileUrl).toBe("https://localhost:3456/images/test.jpg");
+//   expect(bills.status).toBe("pending");
+//   expect(bills.type).toBe("Equipement et matériel");
+//   expect(bills.commentary).toBe(
+//     "Achat d'un ordinateur portable pour les déplacements"
+//   );
+//   expect(bills.name).toBe("Ordinateur portable");
+//   expect(bills.fileName).toBe("preview-facture-free-201801-pdf-1.jpg");
+//   expect(bills.date).toBe("2004-04-04");
+//   expect(bills.amount).toBe(348);
+//   expect(bills.commentAdmin).toBe("");
+//   expect(bills.email).toBe("a@a");
+//   expect(bills.pct).toBe(20);
+// });
 
 // describe("When I am on NewBill page and I upload a file with jpg, jpeg or png extension", () => {
 //   test("Then a new bill should be stored in API", async () => {
@@ -400,4 +392,87 @@ describe("Given I am connected as an employee", () => {
 //     expect(bill.key).toBe("1234");
 //     expect(bill.fileUrl).toBe("https://localhost:3456/images/test.jpg");
 //   });
+// });
+
+//  test("Then i upload a new image bill (.jpg)", () => {
+//       //   beforeEach(() => {
+//       //     jest.spyOn(mockStore, "bills");
+//       //   });
+//       Object.defineProperty(window, "localStorage", {
+//         value: localStorageMock,
+//       });
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//         })
+//       );
+//       // const html = NewBillUI();
+//       // document.body.innerHTML = html;
+//       const root = document.createElement("div");
+//       root.setAttribute("id", "root");
+//       document.body.append(root);
+//       router();
+//       window.onNavigate(ROUTES_PATH.NewBill);
+
+//       const newNewBill = new NewBill({
+//         document,
+//         onNavigate,
+//         store: mockStore,
+//         localStorage: window.localStorage,
+//       });
+//       //const newBillsfile = document.querySelector(`input[data-testid="file"]`);
+//       const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
+//       const newBillsfile = screen.getByTestId("file");
+//       const alertExtension = screen.getByTestId("alertExtension");
+//       const file = new File(["picture"], "test.jpg", { type: "image/jpg" });
+//       newBillsfile.addEventListener("change", handleChangeFile);
+//       fireEvent.input(newBillsfile, file.name);
+
+//       expect(handleChangeFile).toHaveBeenCalled();
+//       expect(file.name).toContain("jpg");
+//       expect(alertExtension.textContent).toBe("");
+
+//   fireEvent.change(newBillsfile, {
+//     target: {
+//       value: [new File(["file"], "test.jpg", { type: "image/jpg" })],
+//     },
+//   });
+//    const file = new File(["foo"], "foo.txt", {
+//      type: "text/plain",
+//    });
+//alertExtension.innerHTML = "";
+// });
+// test("Then i upload a new image bill (jpg)", () => {
+//   beforeEach(() => {
+//     jest.spyOn(mockStore, "bills");
+//   });
+//   Object.defineProperty(window, "localStorage", {
+//     value: localStorageMock,
+//   });
+//   window.localStorage.setItem(
+//     "user",
+//     JSON.stringify({
+//       type: "Employee",
+//     })
+//   );
+//   const html = NewBillUI();
+//   document.body.innerHTML = html;
+
+//   const newNewBill = new NewBill({
+//     document,
+//     onNavigate,
+//     store: mockStore,
+//     localStorage: window.localStorage,
+//   });
+//   const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
+//   const newBillsfile = screen.getByTestId("file");
+//   const file = new File(["picture"], "test.jpg", { type: "image/jpg" });
+//   newBillsfile.textContent = test.jpg;
+//   //newBillsfile.addEventListener("click", handleChangeFile);
+//   //expect(handleChangeFile).toHaveBeenCalled();
+//   fireEvent.change(newBillsfile, file);
+//   expect(newBillsfile.textContent).toContain("jpg");
+//   //   const alertExtension = screen.getByTestId("alertExtension");
+//   //   expect(alertExtension.textContent).toBe("");
 // });

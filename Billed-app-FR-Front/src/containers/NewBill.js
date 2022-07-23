@@ -33,12 +33,10 @@ export default class NewBill {
     // Test de l'extension
 
     if (validExtension.includes(extension)) {
-      alertExtension.textContent = "";
       const formData = new FormData();
       const email = JSON.parse(localStorage.getItem("user")).email;
       formData.append("file", file);
       formData.append("email", email);
-
       this.store
         .bills()
         .create({
@@ -54,6 +52,7 @@ export default class NewBill {
           this.fileName = fileName;
         })
         .catch((error) => console.error(error));
+      alertExtension.textContent = "";
     } else {
       alertExtension.textContent =
         "Le fichier selectionné doit avoir l'extension png, jpg, jpeg";
