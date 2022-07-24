@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom";
+import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
@@ -45,6 +45,7 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId("icon-window");
       //to-do write expect expression
       expect(windowIcon).toBeTruthy();
+      expect(windowIcon.classList.contains("active-icon")).toBeTruthy();
       //expect(windowIcon.id).toBeEqual("icon-window");
     });
     test("Then bills should be ordered from earliest to latest", () => {
@@ -65,10 +66,18 @@ describe("Given I am connected as an employee", () => {
 describe("Given I create a new bill", () => {
   describe("When I click on buttonNewBill", () => {
     test("Then launch modal new bill", async () => {
+      document.body.innerHTML = BillsUI({ data: bills });
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
-      document.body.innerHTML = BillsUI({ data: bills });
+
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: "a@a",
+        })
+      );
 
       const newBill = new Bills({
         document,
@@ -94,10 +103,17 @@ describe("Given I create a new bill", () => {
 describe("Given I want to see an bill", () => {
   describe("When I click iconEye", () => {
     test("Then launch modal iconEye ", async () => {
+      document.body.innerHTML = BillsUI({ data: bills });
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
-      document.body.innerHTML = BillsUI({ data: bills });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: "a@a",
+        })
+      );
 
       const newBill = new Bills({
         document,
@@ -106,7 +122,7 @@ describe("Given I want to see an bill", () => {
         localStorage: window.localStorage,
       });
 
-      const handleClickIconEye = jest.fn(newBill.handleClickIconEye);
+      const handleClickIconEye = jest.fn((e) => newBill.handleClickIconEye);
       //const modal = jest.fn(modal);
       //jest.fn(BillsUI.modal);
       // jest.fn(BillsUI(modal));
@@ -116,15 +132,13 @@ describe("Given I want to see an bill", () => {
       const modaleFile = document.getElementById("modaleFile");
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"));
 
-      const clickIconEye = screen.getAllByTestId("icon-eye");
-      if (clickIconEye)
-        clickIconEye.forEach((icon) => {
-          icon.addEventListener("click", () => handleClickIconEye(icon));
-          userEvent.click(icon);
-          expect(handleClickIconEye).toHaveBeenCalled();
-        });
+      const clickIconEye = screen.getAllByTestId("icon-eye")[0];
 
-      expect(screen.getByText("Justificatif")).toBeTruthy;
+      clickIconEye.addEventListener("click", handleClickIconEye);
+      fireEvent.click(clickIconEye);
+      expect(handleClickIconEye).toHaveBeenCalled();
+      expect($.fn.modal).toHaveBeenCalled();
+      expect(screen.getByText("Justificatif")).toBeTruthy();
     });
   });
 });
@@ -202,11 +216,6 @@ describe("Given I am a user connected as Employee", () => {
             },
           };
         });
-
-        // window.onNavigate();
-        // await new Promise(process.nextTick);
-        // const message = await screen.getByText(/Erreur 500/);
-        // expect(message).toBeTruthy();
         window.onNavigate(ROUTES_PATH.Bills);
         await new Promise(process.nextTick);
         const error500Page = BillsUI({ error: "Erreur 500" });
