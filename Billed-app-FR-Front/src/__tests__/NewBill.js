@@ -11,7 +11,7 @@ import BillsUI from "../views/BillsUI.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import userEvent from "@testing-library/user-event";
-import { bills } from "../fixtures/bills.js";
+//import { bills } from "../fixtures/bills.js";
 import mockStore from "../__mocks__/store.js";
 import router from "../app/Router.js";
 //jest.mock("../__mocks__/store.js", () => mockStore);
@@ -114,7 +114,6 @@ describe("Given I am connected as an employee", () => {
       fireEvent.input(newBillsfile, file);
       expect(file.name).toContain("jpg");
       expect(alertExtension.textContent).toBe("");
-      // voir mentor input
     });
 
     test("Then i upload a new image bill not (jpg,png,jpeg)", () => {
@@ -188,60 +187,59 @@ describe("Given I am a user connected as Employee", () => {
       fireEvent.submit(btnBill);
       expect(handleSubmit).toHaveBeenCalled();
     });
-  });
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills");
 
-  describe("When an error occurs on API", () => {
-    beforeEach(() => {
-      jest.spyOn(mockStore, "bills");
-
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-          email: "a@a",
-        })
-      );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.appendChild(root);
-      router();
-    });
-
-    test("fetches bills from an API and fails with 404 message error", async () => {
-      mockStore.bills.mockImplementationOnce(() => {
-        return {
-          list: () => {
-            return Promise.reject(new Error("Erreur 404"));
-          },
-        };
-      });
-      window.onNavigate(ROUTES_PATH.Bills);
-      await new Promise(process.nextTick);
-      const error404Page = BillsUI({ error: "Erreur 404" });
-      document.body.innerHTML = error404Page;
-      const verificationUrl404 = await waitFor(() =>
-        screen.getByText(/Erreur 404/)
-      );
-      expect(verificationUrl404).toBeTruthy();
-    });
-
-    test("fetches messages from an API and fails with 500 message error", async () => {
-      mockStore.bills.mockImplementationOnce(() => {
-        return {
-          list: () => {
-            return Promise.reject(new Error("Erreur 500"));
-          },
-        };
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+            email: "a@a",
+          })
+        );
+        const root = document.createElement("div");
+        root.setAttribute("id", "root");
+        document.body.appendChild(root);
+        router();
       });
 
-      window.onNavigate(ROUTES_PATH.Bills);
-      await new Promise(process.nextTick);
-      const error500Page = BillsUI({ error: "Erreur 500" });
-      document.body.innerHTML = error500Page;
-      const verificationUrl500 = await waitFor(() =>
-        screen.getByText(/Erreur 500/)
-      );
-      expect(verificationUrl500).toBeTruthy();
+      test("fetches bills from an API and fails with 404 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 404"));
+            },
+          };
+        });
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const error404Page = BillsUI({ error: "Erreur 404" });
+        document.body.innerHTML = error404Page;
+        const verificationUrl404 = await waitFor(() =>
+          screen.getByText(/Erreur 404/)
+        );
+        expect(verificationUrl404).toBeTruthy();
+      });
+
+      test("fetches messages from an API and fails with 500 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 500"));
+            },
+          };
+        });
+
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const error500Page = BillsUI({ error: "Erreur 500" });
+        document.body.innerHTML = error500Page;
+        const verificationUrl500 = await waitFor(() =>
+          screen.getByText(/Erreur 500/)
+        );
+        expect(verificationUrl500).toBeTruthy();
+      });
     });
   });
 });
@@ -616,4 +614,197 @@ describe("Given I am a user connected as Employee", () => {
 //   expect(newBillsfile.textContent).toContain("jpg");
 //   //   const alertExtension = screen.getByTestId("alertExtension");
 //   //   expect(alertExtension.textContent).toBe("");
+// });
+
+// describe("Given I am a user connected as Employee", () => {
+//   describe("When I create a new bill", () => {
+//     test("send new bill from mock API Post", async () => {
+//       Object.defineProperty(window, "localStorage", {
+//         value: localStorageMock,
+//       });
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//           email: "a@a",
+//         })
+//       );
+//       const root = document.createElement("div");
+//       root.setAttribute("id", "root");
+//       document.body.append(root);
+//       router();
+
+//       document.body.innerHTML = NewBillUI();
+
+//       const newNewBill = new NewBill({
+//         document,
+//         onNavigate,
+//         store: mockStore,
+//         localStorage: window.localStorage,
+//       });
+
+//       const btnBill = screen.getByTestId("form-new-bill");
+//       const handleSubmit = jest.fn(newNewBill.handleSubmit);
+//       btnBill.addEventListener("submit", handleSubmit);
+//       fireEvent.submit(btnBill);
+//       expect(handleSubmit).toHaveBeenCalled();
+//     });
+//     test("It should call handleChangeFile() and not send an alert", () => {
+//       Object.defineProperty(window, "localStorage", {
+//         value: localStorageMock,
+//       });
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//         })
+//       );
+//       const root = document.createElement("div");
+//       root.setAttribute("id", "root");
+//       document.body.append(root);
+//       router();
+//       window.onNavigate(ROUTES_PATH.NewBill);
+
+//       const onNavigate = (pathname) => {
+//         document.body.innerHTML = ROUTES({ pathname });
+//       };
+//       const newBill = new NewBill({
+//         document,
+//         onNavigate,
+//         store,
+//         locolaStorage: window.localStorage,
+//       });
+//       jest.spyOn(window, "alert");
+//       const file = document.querySelector(`input[data-testid="file"]`);
+//       const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+//       file.addEventListener("change", handleChangeFile);
+//       fireEvent.change(file, {
+//         target: {
+//           files: [new File([], "fakeFile.jpg", { type: "image/jpg" })],
+//         },
+//       });
+
+//       expect(handleChangeFile).toHaveBeenCalled();
+//       expect(window.alert).not.toHaveBeenCalled();
+//     });
+//     test("Then it should call handleSubmit() and updateBill()", () => {
+//       jest.spyOn(mockStore, "bills");
+
+//       const html = NewBillUI();
+//       document.body.innerHTML = html;
+
+//       Object.defineProperty(window, "localStorage", {
+//         value: localStorageMock,
+//       });
+//       const onNavigate = (pathname) => {
+//         document.body.innerHTML = ROUTES({ pathname });
+//       };
+
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//           email: "a@a",
+//         })
+//       );
+
+//       const newBillJs = new NewBill({
+//         document,
+//         onNavigate,
+//         store: null,
+//         localStorage: window.localStorage,
+//       });
+
+//       const handleChangeFile = jest.fn((e) => newBillJs.handleChangeFile(e));
+//       const uploadInput = screen.getByTestId("file");
+//       const form = screen.getByTestId("form-new-bill");
+//       const handleSubmit = jest.fn((e) => newBillJs.handleSubmit(e));
+
+//       uploadInput.addEventListener("change", handleChangeFile);
+//       newBillJs.updateBill = jest.fn();
+
+//       const validBill = {
+//         type: "Transport",
+//         name: "Train Paris Bordeaux",
+//         date: "2022-07-02",
+//         amount: 350,
+//         vat: 70,
+//         pct: 20,
+//         commentary: "Prix billet TGV : 350€",
+//         fileUrl: "../img/fakeFile.jpg",
+//         fileName: "billet-tgv.jpg",
+//         status: "pending",
+//       };
+
+//       screen.getByTestId("expense-type").value = validBill.type;
+//       screen.getByTestId("expense-name").value = validBill.name;
+//       screen.getByTestId("datepicker").value = validBill.date;
+//       screen.getByTestId("amount").value = validBill.amount;
+//       screen.getByTestId("vat").value = validBill.vat;
+//       screen.getByTestId("pct").value = validBill.pct;
+//       screen.getByTestId("commentary").value = validBill.commentary;
+//       newBillJs.fileName = validBill.fileName;
+//       newBillJs.fileUrl = validBill.fileUrl;
+
+//       form.addEventListener("submit", handleSubmit);
+//       fireEvent.submit(form);
+//       expect(handleSubmit).toHaveBeenCalled();
+//       expect(newBillJs.updateBill).toHaveBeenCalled();
+//     });
+//   });
+
+//   describe("When an error occurs on API", () => {
+//     beforeEach(() => {
+//       jest.spyOn(mockStore, "bills");
+
+//       window.localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           type: "Employee",
+//           email: "a@a",
+//         })
+//       );
+//       const root = document.createElement("div");
+//       root.setAttribute("id", "root");
+//       document.body.appendChild(root);
+//       router();
+//     });
+
+//     test("fetches bills from an API and fails with 404 message error", async () => {
+//       mockStore.bills.mockImplementationOnce(() => {
+//         return {
+//           list: () => {
+//             return Promise.reject(new Error("Erreur 404"));
+//           },
+//         };
+//       });
+//       window.onNavigate(ROUTES_PATH.Bills);
+//       await new Promise(process.nextTick);
+//       const error404Page = BillsUI({ error: "Erreur 404" });
+//       document.body.innerHTML = error404Page;
+//       const verificationUrl404 = await waitFor(() =>
+//         screen.getByText(/Erreur 404/)
+//       );
+//       expect(verificationUrl404).toBeTruthy();
+//     });
+
+//     test("fetches messages from an API and fails with 500 message error", async () => {
+//       mockStore.bills.mockImplementationOnce(() => {
+//         return {
+//           list: () => {
+//             return Promise.reject(new Error("Erreur 500"));
+//           },
+//         };
+//       });
+
+//       window.onNavigate(ROUTES_PATH.Bills);
+//       await new Promise(process.nextTick);
+//       const error500Page = BillsUI({ error: "Erreur 500" });
+//       document.body.innerHTML = error500Page;
+//       const verificationUrl500 = await waitFor(() =>
+//         screen.getByText(/Erreur 500/)
+//       );
+//       expect(verificationUrl500).toBeTruthy();
+//     });
+//   });
 // });
