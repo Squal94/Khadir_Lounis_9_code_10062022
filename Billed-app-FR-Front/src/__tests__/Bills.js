@@ -8,15 +8,11 @@ import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-
 import router from "../app/Router.js";
 
 //Nouvelles Imports pour la suites des tests
 
 import Bills from "../containers/Bills.js";
-//import ErrorPage from "../ErrorPage.js";
-//import { modal } from "../views/DashboardFormUI.js";
-//import modal from "../views/BillsUI.js";
 import mockStore from "../__mocks__/store.js";
 
 const onNavigate = (pathname) => {
@@ -39,14 +35,15 @@ describe("Given I am connected as an employee", () => {
       root.setAttribute("id", "root");
       document.body.append(root);
       router();
+
       window.onNavigate(ROUTES_PATH.Bills);
+
       await waitFor(() => screen.getByTestId("icon-window"));
       //expect n'est pas fourni et la constante windowIcon n'est pas utilisé
       const windowIcon = screen.getByTestId("icon-window");
       //to-do write expect expression
       expect(windowIcon).toBeTruthy();
       expect(windowIcon.classList.contains("active-icon")).toBeTruthy();
-      //expect(windowIcon.id).toBeEqual("icon-window");
     });
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills });
@@ -87,8 +84,8 @@ describe("Given I create a new bill", () => {
       });
 
       const handleClickNewBill = jest.fn(newBill.handleClickNewBill);
-
       const btnNewBill = screen.getByTestId("btn-new-bill");
+
       btnNewBill.addEventListener("click", handleClickNewBill);
       userEvent.click(btnNewBill);
 
@@ -123,19 +120,13 @@ describe("Given I want to see an bill", () => {
       });
 
       const handleClickIconEye = jest.fn((e) => newBill.handleClickIconEye);
-      //const modal = jest.fn(modal);
-      //jest.fn(BillsUI.modal);
-      // jest.fn(BillsUI(modal));
-      // const modaleFile = document.getElementById("modaleFile");
-      // modaleFile.jest.fn(BillsUI(modal));
-
       const modaleFile = document.getElementById("modaleFile");
-      $.fn.modal = jest.fn(() => modaleFile.classList.add("show"));
-
       const clickIconEye = screen.getAllByTestId("icon-eye")[0];
 
+      $.fn.modal = jest.fn(() => modaleFile.classList.add("show"));
       clickIconEye.addEventListener("click", handleClickIconEye);
       fireEvent.click(clickIconEye);
+
       expect(handleClickIconEye).toHaveBeenCalled();
       expect($.fn.modal).toHaveBeenCalled();
       expect(screen.getByText("Justificatif")).toBeTruthy();
@@ -152,21 +143,16 @@ describe("Given I am a user connected as Employee", () => {
         "user",
         JSON.stringify({ type: "Employee", email: "a@a" })
       );
-      //document.body.innerHTML = BillsUI({ data: bills });
       const root = document.createElement("div");
       root.setAttribute("id", "root");
       document.body.append(root);
       router();
-      window.onNavigate(ROUTES_PATH.Bills);
-      const title = await waitFor(() => screen.getByText("Mes notes de frais"));
 
-      // const typeCol = screen.getByText("Type");
-      // expect(typeCol).toBeTruthy();
-      // const NewBill = screen.getByText("Nouvelle note de frais");
-      // expect(NewBill).toBeTruthy();
-      // // const Vol = screen.getByText("Vol Paris Marseille");
-      // // expect(Vol).toBeTruthy();
+      window.onNavigate(ROUTES_PATH.Bills);
+
+      const title = await waitFor(() => screen.getByText("Mes notes de frais"));
       expect(title).toBeTruthy();
+
       const button = await waitFor(() => screen.getByTestId("btn-new-bill"));
       expect(button).toBeTruthy();
     });
@@ -188,7 +174,6 @@ describe("Given I am a user connected as Employee", () => {
         root.setAttribute("id", "root");
         document.body.appendChild(root);
         router();
-        //console.log(BillsUI({ data: bills[0] }));
       });
       test("fetches bills from an API and fails with 404 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
@@ -198,13 +183,16 @@ describe("Given I am a user connected as Employee", () => {
             },
           };
         });
+
         window.onNavigate(ROUTES_PATH.Bills);
+
         await new Promise(process.nextTick);
         const error404Page = BillsUI({ error: "Erreur 404" });
         document.body.innerHTML = error404Page;
         const verificationUrl404 = await waitFor(() =>
           screen.getByText(/Erreur 404/)
         );
+
         expect(verificationUrl404).toBeTruthy();
       });
 
@@ -216,13 +204,16 @@ describe("Given I am a user connected as Employee", () => {
             },
           };
         });
+
         window.onNavigate(ROUTES_PATH.Bills);
+
         await new Promise(process.nextTick);
         const error500Page = BillsUI({ error: "Erreur 500" });
         document.body.innerHTML = error500Page;
         const verificationUrl500 = await waitFor(() =>
           screen.getByText(/Erreur 500/)
         );
+
         expect(verificationUrl500).toBeTruthy();
       });
     });
