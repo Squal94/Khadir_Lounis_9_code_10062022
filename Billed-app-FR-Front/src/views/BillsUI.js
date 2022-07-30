@@ -23,6 +23,7 @@ const row = (bill) => {
 const rows = (data) => {
   return data && data.length
     ? data
+        // ajout du trie par date pour le résultat de la ToDo demandé
         .sort((a, b) => (a.date < b.date ? 1 : -1))
         .map((bill) => row(bill))
         .join("")

@@ -15,6 +15,7 @@ import mockStore from "../__mocks__/store.js";
 import router from "../app/Router.js";
 
 jest.mock("../app/store.js", () => mockStore);
+
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
@@ -76,7 +77,7 @@ describe("Given I am connected as an employee", () => {
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test("Then i upload a new image bill (.jpg)", () => {
+    test("when I upload a new image bill with valide extension", () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -110,7 +111,7 @@ describe("Given I am connected as an employee", () => {
       expect(alertExtension.textContent).toBe("");
     });
 
-    test("Then i upload a new image bill not (jpg,png,jpeg)", () => {
+    test("when I upload a new image bill with wrong extension", () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -147,7 +148,7 @@ describe("Given I am connected as an employee", () => {
 
 describe("Given I am a user connected as Employee", () => {
   describe("When I create a new bill", () => {
-    test("send new bill from mock API Post", async () => {
+    test("Then send new bill from mock API", async () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -180,7 +181,7 @@ describe("Given I am a user connected as Employee", () => {
 
       expect(handleSubmit).toHaveBeenCalled();
     });
-    describe("When an error occurs on API", () => {
+    describe("When an API generates an error", () => {
       beforeEach(() => {
         jest.spyOn(mockStore, "bills");
 

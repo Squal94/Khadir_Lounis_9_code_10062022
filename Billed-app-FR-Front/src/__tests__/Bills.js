@@ -10,7 +10,7 @@ import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
 
-//Nouvelles Imports pour la suites des tests
+//Nouveaux Imports pour la suite des tests
 
 import Bills from "../containers/Bills.js";
 import mockStore from "../__mocks__/store.js";
@@ -39,7 +39,7 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills);
 
       await waitFor(() => screen.getByTestId("icon-window"));
-      //expect n'est pas fourni et la constante windowIcon n'est pas utilisé
+      //expect n'est pas fourni et la constante windowIcon n'est pas utilisée
       const windowIcon = screen.getByTestId("icon-window");
       //to-do write expect expression
       expect(windowIcon).toBeTruthy();
@@ -59,15 +59,20 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-// test Modal new bill launch
-describe("Given I create a new bill", () => {
-  describe("When I click on buttonNewBill", () => {
+// test d'ouverture de la  fenetre Newbill à partir du bouton create new bill de la page Bills
+
+describe("Given I want to create a new bill", () => {
+  describe("When I click on the new bill button", () => {
     test("Then launch modal new bill", async () => {
+      // simulation du dom de Html
       document.body.innerHTML = BillsUI({ data: bills });
+
+      //Definition des propriétées de l'objet
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
 
+      //Definition de l'utilisateur
       window.localStorage.setItem(
         "user",
         JSON.stringify({
@@ -76,6 +81,7 @@ describe("Given I create a new bill", () => {
         })
       );
 
+      // Lancement de la nouvelle instance de Bills
       const newBill = new Bills({
         document,
         onNavigate,
@@ -83,12 +89,16 @@ describe("Given I create a new bill", () => {
         localStorage: window.localStorage,
       });
 
+      // Création de la fonction simulée de handleClickNewBill
       const handleClickNewBill = jest.fn(newBill.handleClickNewBill);
       const btnNewBill = screen.getByTestId("btn-new-bill");
 
+      //Réattribution de ma fonction simulée à un événement click
       btnNewBill.addEventListener("click", handleClickNewBill);
       userEvent.click(btnNewBill);
 
+      // Expect de l'utilisation de ma fonction simulée
+      // Verification de l'apparition du texte "Envoyer une note de frais" dans le DOM
       expect(handleClickNewBill).toHaveBeenCalled();
       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy;
     });
@@ -121,8 +131,11 @@ describe("Given I want to see an bill", () => {
 
       const handleClickIconEye = jest.fn((e) => newBill.handleClickIconEye);
       const modaleFile = document.getElementById("modaleFile");
+      // Je lui indique de prendre la première icon-eye du tableau créé par getAllByTestId
       const clickIconEye = screen.getAllByTestId("icon-eye")[0];
 
+      // Je lui indique que l'action se deroule dans une modal grace à la fonction simulée
+      //  $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"));
       clickIconEye.addEventListener("click", handleClickIconEye);
       fireEvent.click(clickIconEye);
@@ -156,7 +169,7 @@ describe("Given I am a user connected as Employee", () => {
       const button = await waitFor(() => screen.getByTestId("btn-new-bill"));
       expect(button).toBeTruthy();
     });
-    describe("When an error occurs on API", () => {
+    describe("When an API generates an error", () => {
       beforeEach(() => {
         jest.spyOn(mockStore, "bills");
         Object.defineProperty(window, "localStorage", {
