@@ -72,7 +72,7 @@ describe("Given I want to create a new bill", () => {
         value: localStorageMock,
       });
 
-      //Definition de l'utilisateur
+      //Definition de l'utilisateur par la methode setItem de localStorage
       window.localStorage.setItem(
         "user",
         JSON.stringify({
