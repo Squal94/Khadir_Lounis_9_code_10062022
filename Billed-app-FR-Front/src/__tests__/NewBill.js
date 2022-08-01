@@ -19,7 +19,7 @@ jest.mock("../app/store.js", () => mockStore);
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname });
 };
-
+// Verification de la bonne ouverture de la page Newbill
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     test("Then NewBill Page was correctly open", () => {
@@ -102,12 +102,15 @@ describe("Given I am connected as an employee", () => {
       const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
       const newBillsfile = screen.getByTestId("file");
       const alertExtension = screen.getByTestId("alertExtension");
+      // Génération du nouveau fichier
       const file = new File(["picture"], "test.jpg", { type: "image/jpg" });
-
+      //Attribution d'un événement a la function simuler par jest "handleChangeFile"
       newBillsfile.addEventListener("change", handleChangeFile);
+      // Attribution du nouveau fichier a l'input récupéré par newBillsfile
       fireEvent.input(newBillsfile, file);
 
       expect(file.name).toContain("jpg");
+      //Vérification que l'alerte ne se declanche pas quand un fichier avec la bonne extension est utilisé
       expect(alertExtension.textContent).toBe("");
     });
 
@@ -139,6 +142,7 @@ describe("Given I am connected as an employee", () => {
       fireEvent.input(newBillsfile, file);
 
       expect(file.name).not.toContain("jpg");
+      //Vérification que l'alerte se declanche quand un fichier avec la mauvaise extension est utilisé
       expect(alertExtension.textContent).toBe(
         "Le fichier selectionné doit avoir l'extension png, jpg, jpeg"
       );
@@ -146,9 +150,12 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
+// Test integration Post
+
 describe("Given I am a user connected as Employee", () => {
   describe("When I create a new bill", () => {
     test("Then send new bill from mock API", async () => {
+      // Je teste le Post en vérifient que les données sont bien envoyées grace à handleSubmit .
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
