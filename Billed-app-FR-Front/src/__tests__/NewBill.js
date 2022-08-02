@@ -93,24 +93,22 @@ describe("Given I am connected as an employee", () => {
       router();
       window.onNavigate(ROUTES_PATH.NewBill);
 
-      const newNewBill = new NewBill({
+      const newBill = new NewBill({
         document,
         onNavigate,
         store: mockStore,
-        localStorage: window.localStorage,
+        locolaStorage: window.localStorage,
       });
-      const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
-      const newBillsfile = screen.getByTestId("file");
+      const file = document.querySelector(`input[data-testid="file"]`);
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
       const alertExtension = screen.getByTestId("alertExtension");
-      // Génération du nouveau fichier
-      const file = new File(["picture"], "test.jpg", { type: "image/jpg" });
-      //Attribution d'un événement a la function simuler par jest "handleChangeFile"
-      newBillsfile.addEventListener("change", handleChangeFile);
-      // Attribution du nouveau fichier a l'input récupéré par newBillsfile
-      fireEvent.input(newBillsfile, file);
-
-      expect(file.name).toContain("jpg");
-      //Vérification que l'alerte ne se declanche pas quand un fichier avec la bonne extension est utilisé
+      file.addEventListener("change", handleChangeFile);
+      fireEvent.change(file, {
+        target: {
+          files: [new File([], "fakeFile.jpg", { type: "image/jpg" })],
+        },
+      });
+      expect(handleChangeFile).toHaveBeenCalled();
       expect(alertExtension.textContent).toBe("");
     });
 
@@ -124,25 +122,28 @@ describe("Given I am connected as an employee", () => {
           type: "Employee",
         })
       );
-      const html = NewBillUI();
-      document.body.innerHTML = html;
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+      window.onNavigate(ROUTES_PATH.NewBill);
 
-      const newNewBill = new NewBill({
+      const newBill = new NewBill({
         document,
         onNavigate,
         store: mockStore,
-        localStorage: window.localStorage,
+        locolaStorage: window.localStorage,
       });
-      const handleChangeFile = jest.fn((e) => newNewBill.handleChangeFile(e));
-      const newBillsfile = screen.getByTestId("file");
-      const file = new File(["texte"], "test.txt", { type: "texte/txt" });
+      const file = document.querySelector(`input[data-testid="file"]`);
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
       const alertExtension = screen.getByTestId("alertExtension");
-
-      newBillsfile.addEventListener("input", handleChangeFile);
-      fireEvent.input(newBillsfile, file);
-
-      expect(file.name).not.toContain("jpg");
-      //Vérification que l'alerte se declanche quand un fichier avec la mauvaise extension est utilisé
+      file.addEventListener("change", handleChangeFile);
+      fireEvent.change(file, {
+        target: {
+          files: [new File([], "fakeFile.txt", { type: "text/txt" })],
+        },
+      });
+      expect(handleChangeFile).toHaveBeenCalled();
       expect(alertExtension.textContent).toBe(
         "Le fichier selectionné doit avoir l'extension png, jpg, jpeg"
       );
